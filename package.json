@@ -1,0 +1,20 @@
+{
+    "name": "micro-frontend-template",
+    "private": true,
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "start": "node scripts/start.js",
+        "build": "node scripts/build.js",
+        "deploy": "node scripts/deploy.js",
+       "install:all": "npm install && npm run install:apps",
+    "install:apps": "cd packages/main-app && npm install && cd ../react-app && npm install && cd ../vue3-micro-app && npm install"
+    },
+    "devDependencies": {
+        "concurrently": "^9.0.1",
+        "husky": "^7.0.0",
+        "lint-staged": "^13.0.0",
+        "prettier": "^2.0.0"
+    }
+}
