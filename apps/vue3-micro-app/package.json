@@ -1,0 +1,33 @@
+{
+  "name": "vue3-micro-app",
+  "version": "1.0.0",
+  "description": "Vue3 micro-frontend application",
+  "private": true,
+  "scripts": {
+    "dev": "vite --port 3002",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview",
+    "type-check": "vue-tsc --noEmit",
+    "lint": "eslint src --ext .ts,.vue",
+    "lint:fix": "eslint src --ext .ts,.vue --fix"
+  },
+  "dependencies": {
+    "@enterprise/micro-app-sdk": "workspace:*",
+    "@enterprise/shared-types": "workspace:*",
+    "@enterprise/shared-utils": "workspace:*",
+    "ant-design-vue": "^4.0.8",
+    "vue": "^3.3.8",
+    "vue-router": "^4.2.5",
+    "pinia": "^2.1.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.4",
+    "@vitejs/plugin-vue": "^4.5.2",
+    "@vue/eslint-config-typescript": "^12.0.0",
+    "eslint": "^8.54.0",
+    "eslint-plugin-vue": "^9.18.1",
+    "typescript": "^5.3.2",
+    "vite": "^5.0.8",
+    "vue-tsc": "^1.8.25"
+  }
+}
