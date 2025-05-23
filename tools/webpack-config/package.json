@@ -1,0 +1,33 @@
+{
+  "name": "@enterprise/webpack-config",
+  "version": "1.0.0",
+  "description": "Shared webpack configuration for micro-frontend applications",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "webpack": "^5.89.0",
+    "webpack-dev-server": "^4.15.1",
+    "html-webpack-plugin": "^5.5.3",
+    "css-loader": "^6.8.1",
+    "style-loader": "^3.3.3",
+    "ts-loader": "^9.5.1",
+    "mini-css-extract-plugin": "^2.7.6",
+    "terser-webpack-plugin": "^5.3.9",
+    "css-minimizer-webpack-plugin": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/webpack": "^5.28.5",
+    "typescript": "^5.3.2"
+  },
+  "files": [
+    "dist",
+    "*.js"
+  ],
+  "publishConfig": {
+    "access": "restricted"
+  }
+}

@@ -1,1 +1,51 @@
-{"name": "@enterprise/micro-frontend-template", "version": "1.0.0", "private": true}
+{
+  "name": "@enterprise/micro-frontend-template",
+  "version": "1.0.0",
+  "description": "Enterprise-grade micro-frontend template based on qiankun",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"pnpm --filter main-app dev\" \"pnpm --filter react-micro-app dev\" \"pnpm --filter vue3-micro-app dev\"",
+    "build": "node scripts/build.js",
+    "build:clean": "node scripts/build.js --clean",
+    "deploy": "node scripts/deploy.js",
+    "deploy:staging": "node scripts/deploy.js staging",
+    "deploy:production": "node scripts/deploy.js production",
+    "deploy:docker": "node scripts/deploy.js --docker",
+    "clean": "pnpm -r clean && rm -rf node_modules deploy build-report.json",
+    "lint": "pnpm -r lint",
+    "lint:fix": "pnpm -r lint:fix",
+    "type-check": "pnpm -r type-check",
+    "test": "pnpm -r test",
+    "test:coverage": "pnpm -r test:coverage",
+    "prepare": "husky install",
+    "precommit": "lint-staged",
+    "postinstall": "pnpm build:packages",
+    "build:packages": "pnpm --filter @enterprise/shared-types build && pnpm --filter @enterprise/shared-utils build && pnpm --filter @enterprise/micro-app-sdk build && pnpm --filter @enterprise/shared-components build"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^18.4.3",
+    "@commitlint/config-conventional": "^18.4.3",
+    "concurrently": "^8.2.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.1.0",
+    "typescript": "^5.3.2"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,vue}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  },
+  "commitlint": {
+    "extends": ["@commitlint/config-conventional"]
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.12.0"
+}
