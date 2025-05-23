@@ -20,7 +20,7 @@
     "prepare": "husky install",
     "precommit": "lint-staged",
     "postinstall": "pnpm build:packages",
-    "build:packages": "pnpm --filter @enterprise/shared-types build && pnpm --filter @enterprise/shared-utils build && pnpm --filter @enterprise/micro-app-sdk build && pnpm --filter @enterprise/shared-components build"
+    "build:packages": "pnpm --filter @enterprise/shared-types build && pnpm --filter @enterprise/shared-utils build && pnpm --filter @enterprise/micro-app-sdk build && pnpm --filter @enterprise/shared-components build && pnpm --filter @enterprise/monitoring-sdk build && pnpm --filter @enterprise/dev-tools build"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.4.3",

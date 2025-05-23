@@ -1,0 +1,29 @@
+{
+  "name": "@enterprise/monitoring-sdk",
+  "version": "1.0.0",
+  "description": "Monitoring and analytics SDK for micro-frontend applications",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "test": "jest",
+    "lint": "eslint src --ext .ts"
+  },
+  "dependencies": {
+    "@enterprise/shared-types": "workspace:*",
+    "@enterprise/shared-utils": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.4",
+    "typescript": "^5.3.2"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "restricted"
+  }
+}

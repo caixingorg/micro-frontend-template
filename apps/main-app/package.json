@@ -18,6 +18,8 @@
     "@enterprise/shared-types": "workspace:*",
     "@enterprise/shared-utils": "workspace:*",
     "@enterprise/shared-components": "workspace:*",
+    "@enterprise/monitoring-sdk": "workspace:*",
+    "@enterprise/dev-tools": "workspace:*",
     "@reduxjs/toolkit": "^2.0.1",
     "antd": "^5.12.8",
     "qiankun": "^2.10.16",

@@ -200,8 +200,8 @@ export const microApps: MicroAppConfig[] = [
   // ... 其他微应用
   {
     name: 'new-micro-app',
-    entry: process.env.NODE_ENV === 'development' 
-      ? '//localhost:3003' 
+    entry: process.env.NODE_ENV === 'development'
+      ? '//localhost:3003'
       : '/new-micro-app',
     container: '#new-micro-app-container',
     activeRule: '/new-app',
@@ -252,9 +252,9 @@ import { MyComponent } from '@enterprise/shared-components';
 
 function App() {
   return (
-    <MyComponent 
-      title="Hello World" 
-      onClick={() => console.log('clicked')} 
+    <MyComponent
+      title="Hello World"
+      onClick={() => console.log('clicked')}
     />
   );
 }
@@ -322,7 +322,7 @@ microAppManager.start({
 const toggleTheme = () => {
   const newTheme = theme === 'light' ? 'dark' : 'light';
   dispatch(setTheme(newTheme));
-  
+
   // 通知所有微应用
   microAppManager.setGlobalState({ theme: newTheme });
 };
@@ -363,7 +363,7 @@ describe('MyComponent', () => {
   it('calls onClick when clicked', () => {
     const handleClick = jest.fn();
     render(<MyComponent title="Test" onClick={handleClick} />);
-    
+
     screen.getByText('Test').click();
     expect(handleClick).toHaveBeenCalled();
   });
@@ -392,7 +392,7 @@ describe('Micro Frontend', () => {
     cy.visit('/');
     cy.contains('React应用').click();
     cy.url().should('include', '/react-app');
-    
+
     cy.contains('Vue3应用').click();
     cy.url().should('include', '/vue3-app');
   });
@@ -485,6 +485,114 @@ module.exports = {
     },
   },
 };
+```
+
+## 监控和分析
+
+### 错误监控
+
+项目集成了完整的错误监控系统：
+
+```typescript
+import { reportError, addBreadcrumb } from '@/utils/monitoring';
+
+// 手动上报错误
+try {
+  // 业务逻辑
+} catch (error) {
+  reportError(error, { context: 'user-action' });
+}
+
+// 添加面包屑
+addBreadcrumb('用户点击按钮', 'info');
+```
+
+### 性能监控
+
+自动收集性能指标：
+
+```typescript
+import { markPerformance, measurePerformance } from '@/utils/monitoring';
+
+// 性能标记
+markPerformance('api-start');
+await fetchData();
+markPerformance('api-end');
+
+// 性能测量
+const duration = measurePerformance('api-duration', 'api-start', 'api-end');
+```
+
+### 用户行为分析
+
+跟踪用户行为：
+
+```typescript
+import { trackUserEvent, trackPageView } from '@/utils/monitoring';
+
+// 跟踪事件
+trackUserEvent('button', 'click', 'submit-form');
+
+// 跟踪页面访问
+trackPageView('/dashboard', '仪表板');
+```
+
+## 开发工具
+
+### 微应用开发工具
+
+开发环境下自动启用开发者工具面板：
+
+- **快捷键**: `Ctrl/Cmd + Shift + D` 切换开发者工具
+- **功能**:
+  - 微应用状态监控
+  - 性能指标查看
+  - 网络请求监控
+  - 控制台日志
+
+### 热重载
+
+支持微应用热重载：
+
+```typescript
+import { hotReloadManager } from '@enterprise/dev-tools';
+
+// 注册微应用热重载处理器
+hotReloadManager.registerMicroAppHandler('my-app', () => {
+  // 自定义重载逻辑
+  console.log('微应用热重载');
+});
+```
+
+### Mock数据
+
+开发环境下支持API Mock：
+
+```typescript
+import { mockManager } from '@enterprise/dev-tools';
+
+// 添加Mock规则
+mockManager.addRule({
+  method: 'GET',
+  url: '/api/users',
+  response: { users: [] },
+  delay: 1000,
+});
+
+// 快捷键: Ctrl/Cmd + Shift + M 切换Mock
+```
+
+## Storybook组件文档
+
+查看和测试共享组件：
+
+```bash
+# 启动Storybook
+cd packages/shared-components
+pnpm storybook
+
+# 构建Storybook
+pnpm build-storybook
 ```
 
 ## 常见问题
