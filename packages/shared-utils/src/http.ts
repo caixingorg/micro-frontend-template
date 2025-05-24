@@ -26,7 +26,7 @@ export class HttpClient {
     this.instance.interceptors.request.use(
       (config) => {
         const httpConfig = config as HttpConfig;
-        
+
         // 添加认证头
         if (!httpConfig.skipAuth) {
           const token = this.getAuthToken();
@@ -51,7 +51,7 @@ export class HttpClient {
     this.instance.interceptors.response.use(
       (response: AxiosResponse<ApiResponse>) => {
         console.log(`[HTTP] Response:`, response);
-        
+
         // 统一处理业务错误
         if (response.data && !response.data.success) {
           const error = new Error(response.data.message || 'Request failed');
@@ -63,7 +63,7 @@ export class HttpClient {
       },
       (error) => {
         console.error('[HTTP] Response error:', error);
-        
+
         const httpConfig = error.config as HttpConfig;
         if (!httpConfig?.skipErrorHandler) {
           this.handleError(error);
@@ -86,7 +86,7 @@ export class HttpClient {
   private handleError(error: any) {
     if (error.response) {
       const { status, data } = error.response;
-      
+
       switch (status) {
         case 401:
           // 未授权，跳转到登录页
@@ -115,10 +115,10 @@ export class HttpClient {
   private handleUnauthorized() {
     // 清除token
     localStorage.removeItem('auth_token');
-    
+
     // 发送全局事件
     window.dispatchEvent(new CustomEvent('auth:unauthorized'));
-    
+
     // 跳转到登录页（如果不在微应用环境中）
     if (!(window as any).__POWERED_BY_QIANKUN__) {
       window.location.href = '/login';
@@ -157,8 +157,8 @@ export class HttpClient {
 
   // 上传文件
   async upload<T = any>(
-    url: string, 
-    file: File, 
+    url: string,
+    file: File,
     config?: HttpConfig & { onProgress?: (progress: number) => void }
   ): Promise<T> {
     const formData = new FormData();
@@ -205,7 +205,21 @@ export class HttpClient {
   }
 }
 
+// 获取API基础URL的函数
+function getApiBaseUrl(): string {
+  // 在浏览器环境中，process.env可能未定义
+  if (typeof process !== 'undefined' && process.env && process.env.REACT_APP_API_BASE_URL) {
+    return process.env.REACT_APP_API_BASE_URL;
+  }
+
+  // 从window对象获取配置（如果有的话）
+  if (typeof window !== 'undefined' && (window as any).__APP_CONFIG__?.apiBaseUrl) {
+    return (window as any).__APP_CONFIG__.apiBaseUrl;
+  }
+
+  // 默认值
+  return '/api';
+}
+
 // 创建默认HTTP客户端实例
-export const httpClient = new HttpClient(
-  process.env.REACT_APP_API_BASE_URL || '/api'
-);
+export const httpClient = new HttpClient(getApiBaseUrl());

@@ -7,7 +7,7 @@ export class Storage {
 
   constructor(prefix = 'app', type: 'localStorage' | 'sessionStorage' = 'localStorage') {
     this.prefix = prefix;
-    this.storage = type === 'localStorage' ? localStorage : sessionStorage;
+    this.storage = type === 'localStorage' ? globalThis.localStorage : globalThis.sessionStorage;
   }
 
   private getKey(key: string): string {
@@ -65,7 +65,7 @@ export class Storage {
     try {
       const keys = Object.keys(this.storage);
       const prefixedKeys = keys.filter(key => key.startsWith(`${this.prefix}:`));
-      
+
       prefixedKeys.forEach(key => {
         this.storage.removeItem(key);
       });
@@ -104,14 +104,14 @@ export class Storage {
       let total = 0;
       const keys = Object.keys(this.storage);
       const prefixedKeys = keys.filter(key => key.startsWith(`${this.prefix}:`));
-      
+
       prefixedKeys.forEach(key => {
         const value = this.storage.getItem(key);
         if (value) {
           total += key.length + value.length;
         }
       });
-      
+
       return total;
     } catch (error) {
       console.error('[Storage] Failed to calculate size:', error);
@@ -146,7 +146,7 @@ export class Storage {
       }
 
       const parsed = JSON.parse(item);
-      
+
       // 检查是否过期
       if (parsed.expiry && Date.now() > parsed.expiry) {
         this.remove(key);
@@ -186,8 +186,8 @@ export class CookieStorage {
     let cookieString = `${encodeURIComponent(name)}=${encodeURIComponent(value)}`;
 
     if (options.expires) {
-      const expires = options.expires instanceof Date 
-        ? options.expires 
+      const expires = options.expires instanceof Date
+        ? options.expires
         : new Date(Date.now() + options.expires * 24 * 60 * 60 * 1000);
       cookieString += `; expires=${expires.toUTCString()}`;
     }
@@ -233,7 +233,7 @@ export class CookieStorage {
    */
   static remove(name: string, path = '/', domain?: string): void {
     let cookieString = `${encodeURIComponent(name)}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=${path}`;
-    
+
     if (domain) {
       cookieString += `; domain=${domain}`;
     }
@@ -253,7 +253,7 @@ export class CookieStorage {
    */
   static getAll(): Record<string, string> {
     const cookies: Record<string, string> = {};
-    
+
     if (document.cookie) {
       document.cookie.split(';').forEach(cookie => {
         const [name, value] = cookie.trim().split('=');

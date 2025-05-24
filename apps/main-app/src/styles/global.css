@@ -1,0 +1,299 @@
+/* 全局样式和动画 */
+
+/* 页面过渡动画 */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms ease-in-out, transform 300ms ease-in-out;
+}
+
+.page-transition-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 300ms ease-in-out, transform 300ms ease-in-out;
+}
+
+/* 卡片悬停效果 */
+.ant-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* 头部折叠按钮悬停效果 */
+.header-collapse-btn:hover {
+  background: rgba(0, 0, 0, 0.06) !important;
+  transform: scale(1.05);
+}
+
+/* 用户下拉菜单悬停效果 */
+.user-dropdown:hover {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+/* 侧边栏菜单项动画 */
+.ant-menu-item,
+.ant-menu-submenu-title {
+  transition: all 0.3s ease !important;
+}
+
+.ant-menu-item:hover,
+.ant-menu-submenu-title:hover {
+  transform: translateX(4px);
+}
+
+/* 统计卡片动画 */
+.statistic-card {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.statistic-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s ease;
+}
+
+.statistic-card:hover::before {
+  left: 100%;
+}
+
+/* 快速操作卡片动画 */
+.quick-action-card {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.quick-action-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* 面包屑样式优化 */
+.ant-breadcrumb {
+  margin: 16px 0 !important;
+}
+
+.ant-breadcrumb-link {
+  color: #666 !important;
+  transition: color 0.3s ease;
+}
+
+.ant-breadcrumb-link:hover {
+  color: #1890ff !important;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .ant-layout-sider {
+    position: fixed !important;
+    z-index: 1001 !important;
+    height: 100vh !important;
+  }
+  
+  .ant-layout-content {
+    margin-left: 0 !important;
+    padding: 16px !important;
+  }
+  
+  .ant-card {
+    margin-bottom: 16px !important;
+  }
+  
+  .ant-statistic-title {
+    font-size: 12px !important;
+  }
+  
+  .ant-statistic-content-value {
+    font-size: 20px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .ant-layout-header {
+    padding: 0 16px !important;
+  }
+  
+  .ant-layout-header h1 {
+    font-size: 16px !important;
+  }
+  
+  .ant-col {
+    margin-bottom: 16px;
+  }
+}
+
+/* 加载动画 */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 渐入动画 */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 弹跳动画 */
+.bounce-in {
+  animation: bounceIn 0.6s ease-out;
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 主题切换动画 */
+.theme-transition {
+  transition: all 0.3s ease !important;
+}
+
+/* 微应用容器样式 */
+.micro-app-container {
+  min-height: calc(100vh - 200px);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  background: #fff;
+}
+
+/* 错误边界样式 */
+.error-boundary {
+  padding: 40px;
+  text-align: center;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.error-boundary h2 {
+  color: #ff4d4f;
+  margin-bottom: 16px;
+}
+
+.error-boundary p {
+  color: #666;
+  margin-bottom: 24px;
+}
+
+/* 自定义按钮样式 */
+.custom-button {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.custom-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+}
+
+/* 渐变背景 */
+.gradient-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-bg-light {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+/* 玻璃效果 */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+/* 阴影效果 */
+.shadow-sm {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.shadow-md {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-lg {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.shadow-xl {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+}

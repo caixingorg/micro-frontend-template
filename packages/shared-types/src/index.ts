@@ -120,6 +120,39 @@ export interface EnvConfig {
   ENABLE_MOCK: boolean;
 }
 
+// 预加载相关类型
+export interface PreloadConfig {
+  strategy: 'eager' | 'lazy' | 'smart';
+  maxConcurrent: number;
+  networkThreshold: 'slow' | 'fast' | 'auto';
+  cacheSize: number;
+  enableBehaviorPrediction: boolean;
+  prefetchDelay: number;
+}
+
+export interface NetworkInfo {
+  effectiveType: '2g' | '3g' | '4g' | 'slow-2g';
+  downlink: number;
+  rtt: number;
+  saveData: boolean;
+}
+
+export interface UserBehavior {
+  path: string;
+  timestamp: number;
+  duration: number;
+  nextPath?: string;
+}
+
+export interface PreloadTask {
+  appName: string;
+  priority: 'high' | 'medium' | 'low';
+  status: 'pending' | 'loading' | 'loaded' | 'failed';
+  startTime?: number;
+  endTime?: number;
+  error?: string;
+}
+
 // 错误相关类型
 export interface ErrorInfo {
   message: string;

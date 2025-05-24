@@ -1,62 +1,69 @@
-import { createApp, App as VueApp } from 'vue';
-import { isQiankunEnvironment, setWebpackPublicPath } from '@enterprise/micro-app-sdk';
+import './assets/main.css'
+import './styles/style-isolation.css'
+import './styles/antd-override.css'
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import { createRouter, createWebHistory } from 'vue-router'
+import { 
+  qiankunWindow,
+  renderWithQiankun
+} from 'vite-plugin-qiankun/dist/helper'
+import Antd from 'ant-design-vue'
+import 'ant-design-vue/dist/reset.css'
 
-import App from './App.vue';
-import { createAppRouter } from './router';
-import { pinia } from './store';
+import App from './App.vue'
+import { routes } from './router'
 
-// Ant Design Vue
-import Antd from 'ant-design-vue';
-import 'ant-design-vue/dist/reset.css';
-
-// 设置webpack公共路径
-setWebpackPublicPath();
-
-let app: VueApp | null = null;
+let instance: any = null
 
 function render(props: any = {}) {
-  const { container, routerBase } = props;
-  const router = createAppRouter(routerBase);
+  const { container, routerBase } = props
   
-  app = createApp(App);
-  app.use(router);
-  app.use(pinia);
-  app.use(Antd);
+  const router = createRouter({
+    history: createWebHistory(qiankunWindow.__POWERED_BY_QIANKUN__ ? routerBase : '/'),
+    routes,
+  })
 
-  const containerElement = container 
-    ? container.querySelector('#vue3-micro-app-root') 
-    : document.getElementById('vue3-micro-app-root');
+  const pinia = createPinia()
 
+  instance = createApp(App)
+  instance.use(pinia)
+  instance.use(router)
+  instance.use(Antd)
+
+  const containerElement = container ? container.querySelector('#app') : document.getElementById('app')
+  
   if (containerElement) {
-    app.mount(containerElement);
+    instance.mount(containerElement)
   } else {
-    console.error('Vue3 micro app container not found');
+    console.error('[Vue3 Micro App] Container not found')
   }
 }
 
-function unmount() {
-  if (app) {
-    app.unmount();
-    app = null;
+function unmountApp() {
+  if (instance) {
+    instance.unmount()
+    instance = null
   }
 }
 
-// 独立运行时直接渲染
-if (!isQiankunEnvironment()) {
-  render();
-}
+renderWithQiankun({
+  mount(props: any) {
+    console.log('[Vue3 Micro App] mount', props)
+    render(props)
+  },
+  bootstrap() {
+    console.log('[Vue3 Micro App] bootstrap')
+  },
+  unmount(props: any) {
+    console.log('[Vue3 Micro App] unmount', props)
+    unmountApp()
+  },
+  update(props: any) {
+    console.log('[Vue3 Micro App] update', props)
+  },
+})
 
-// 导出qiankun生命周期函数
-export async function bootstrap() {
-  console.log('[Vue3 Micro App] Bootstrap');
-}
-
-export async function mount(props: any) {
-  console.log('[Vue3 Micro App] Mount', props);
-  render(props);
-}
-
-export async function unmount(props: any) {
-  console.log('[Vue3 Micro App] Unmount', props);
-  unmount();
+if (!qiankunWindow.__POWERED_BY_QIANKUN__) {
+  render({})
 }

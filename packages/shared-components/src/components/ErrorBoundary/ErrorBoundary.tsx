@@ -31,7 +31,7 @@ export class ErrorBoundary extends Component<Props, State> {
     const customErrorInfo: ErrorInfo = {
       message: error.message,
       stack: error.stack,
-      componentStack: errorInfo.componentStack,
+      componentStack: errorInfo.componentStack || undefined,
       errorBoundary: this.constructor.name,
     };
 
@@ -50,7 +50,7 @@ export class ErrorBoundary extends Component<Props, State> {
   private reportError = (error: Error, errorInfo: ErrorInfo) => {
     // 这里可以集成错误监控服务，如 Sentry
     console.error('ErrorBoundary caught an error:', error, errorInfo);
-    
+
     // 发送到错误监控服务
     if (window.location.hostname !== 'localhost') {
       // 生产环境才上报

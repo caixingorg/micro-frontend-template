@@ -1,0 +1,288 @@
+/* Vue3 微应用 Ant Design Vue 样式覆盖文件 */
+
+/* 确保所有 Ant Design 组件在 vue3-app 容器内生效 */
+#vue3-app {
+  /* Ant Design 组件样式前缀覆盖 */
+  --ant-primary-color: #1890ff;
+  --ant-success-color: #52c41a;
+  --ant-warning-color: #faad14;
+  --ant-error-color: #ff4d4f;
+  --ant-info-color: #1890ff;
+  --ant-text-color: rgba(0, 0, 0, 0.85);
+  --ant-text-color-secondary: rgba(0, 0, 0, 0.65);
+  --ant-border-color-base: #d9d9d9;
+  --ant-border-radius-base: 6px;
+  --ant-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* 重置可能与主应用冲突的全局样式 */
+#vue3-app .ant-btn {
+  font-family: var(--ant-font-family) !important;
+  border-radius: var(--ant-border-radius-base) !important;
+  font-weight: 400 !important;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02) !important;
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) !important;
+}
+
+#vue3-app .ant-btn-primary {
+  background: var(--ant-primary-color) !important;
+  border-color: var(--ant-primary-color) !important;
+  color: #fff !important;
+}
+
+#vue3-app .ant-btn-primary:hover,
+#vue3-app .ant-btn-primary:focus {
+  background: #40a9ff !important;
+  border-color: #40a9ff !important;
+}
+
+#vue3-app .ant-btn-primary:active {
+  background: #096dd9 !important;
+  border-color: #096dd9 !important;
+}
+
+/* Card 组件样式 */
+#vue3-app .ant-card {
+  background: #fff !important;
+  border-radius: var(--ant-border-radius-base) !important;
+  border: 1px solid var(--ant-border-color-base) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+  font-family: var(--ant-font-family) !important;
+}
+
+#vue3-app .ant-card-head {
+  border-bottom: 1px solid var(--ant-border-color-base) !important;
+  background: rgba(250, 250, 250, 0.6) !important;
+}
+
+#vue3-app .ant-card-head-title {
+  color: var(--ant-text-color) !important;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+}
+
+#vue3-app .ant-card-body {
+  padding: 24px !important;
+}
+
+/* Menu 组件样式 */
+#vue3-app .ant-menu {
+  background: transparent !important;
+  border: none !important;
+  font-family: var(--ant-font-family) !important;
+}
+
+#vue3-app .ant-menu-item {
+  color: var(--ant-text-color) !important;
+  font-weight: 400 !important;
+}
+
+#vue3-app .ant-menu-item:hover,
+#vue3-app .ant-menu-item-active {
+  color: var(--ant-primary-color) !important;
+  background-color: rgba(24, 144, 255, 0.06) !important;
+}
+
+#vue3-app .ant-menu-item-selected {
+  color: var(--ant-primary-color) !important;
+  background-color: rgba(24, 144, 255, 0.1) !important;
+  font-weight: 500 !important;
+}
+
+/* Input 组件样式 */
+#vue3-app .ant-input {
+  border-radius: var(--ant-border-radius-base) !important;
+  border-color: var(--ant-border-color-base) !important;
+  font-family: var(--ant-font-family) !important;
+  color: var(--ant-text-color) !important;
+}
+
+#vue3-app .ant-input:hover {
+  border-color: #40a9ff !important;
+}
+
+#vue3-app .ant-input:focus,
+#vue3-app .ant-input-focused {
+  border-color: var(--ant-primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2) !important;
+}
+
+/* Select 组件样式 */
+#vue3-app .ant-select {
+  font-family: var(--ant-font-family) !important;
+}
+
+#vue3-app .ant-select-selector {
+  border-radius: var(--ant-border-radius-base) !important;
+  border-color: var(--ant-border-color-base) !important;
+  color: var(--ant-text-color) !important;
+}
+
+#vue3-app .ant-select-focused .ant-select-selector {
+  border-color: var(--ant-primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2) !important;
+}
+
+/* Table 组件样式 */
+#vue3-app .ant-table {
+  font-family: var(--ant-font-family) !important;
+  color: var(--ant-text-color) !important;
+}
+
+#vue3-app .ant-table-thead > tr > th {
+  background: rgba(250, 250, 250, 0.8) !important;
+  color: var(--ant-text-color) !important;
+  border-bottom: 1px solid var(--ant-border-color-base) !important;
+  font-weight: 600 !important;
+}
+
+#vue3-app .ant-table-tbody > tr > td {
+  border-bottom: 1px solid #f0f0f0 !important;
+  color: var(--ant-text-color) !important;
+}
+
+#vue3-app .ant-table-tbody > tr:hover > td {
+  background: rgba(24, 144, 255, 0.03) !important;
+}
+
+/* Form 组件样式 */
+#vue3-app .ant-form {
+  font-family: var(--ant-font-family) !important;
+}
+
+#vue3-app .ant-form-item-label > label {
+  color: var(--ant-text-color) !important;
+  font-weight: 500 !important;
+}
+
+#vue3-app .ant-form-item-explain-error {
+  color: var(--ant-error-color) !important;
+}
+
+/* Breadcrumb 组件样式 */
+#vue3-app .ant-breadcrumb {
+  font-family: var(--ant-font-family) !important;
+  color: var(--ant-text-color-secondary) !important;
+}
+
+#vue3-app .ant-breadcrumb a {
+  color: var(--ant-text-color-secondary) !important;
+  transition: color 0.3s !important;
+}
+
+#vue3-app .ant-breadcrumb a:hover {
+  color: var(--ant-primary-color) !important;
+}
+
+/* Descriptions 组件样式 */
+#vue3-app .ant-descriptions {
+  font-family: var(--ant-font-family) !important;
+}
+
+#vue3-app .ant-descriptions-item-label {
+  color: var(--ant-text-color) !important;
+  font-weight: 500 !important;
+}
+
+#vue3-app .ant-descriptions-item-content {
+  color: var(--ant-text-color) !important;
+}
+
+/* Tag 组件样式 */
+#vue3-app .ant-tag {
+  border-radius: var(--ant-border-radius-base) !important;
+  font-family: var(--ant-font-family) !important;
+  font-weight: 400 !important;
+}
+
+/* Statistic 组件样式 */
+#vue3-app .ant-statistic {
+  font-family: var(--ant-font-family) !important;
+}
+
+#vue3-app .ant-statistic-title {
+  color: var(--ant-text-color-secondary) !important;
+  font-weight: 500 !important;
+}
+
+#vue3-app .ant-statistic-content {
+  color: var(--ant-text-color) !important;
+  font-weight: 600 !important;
+}
+
+/* List 组件样式 */
+#vue3-app .ant-list {
+  font-family: var(--ant-font-family) !important;
+}
+
+#vue3-app .ant-list-item {
+  color: var(--ant-text-color) !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+}
+
+#vue3-app .ant-list-item-meta-title {
+  color: var(--ant-text-color) !important;
+  font-weight: 500 !important;
+}
+
+#vue3-app .ant-list-item-meta-description {
+  color: var(--ant-text-color-secondary) !important;
+}
+
+/* Avatar 组件样式 */
+#vue3-app .ant-avatar {
+  font-family: var(--ant-font-family) !important;
+  background: var(--ant-primary-color) !important;
+  color: #fff !important;
+}
+
+/* Space 组件样式 */
+#vue3-app .ant-space {
+  font-family: var(--ant-font-family) !important;
+}
+
+/* Row 和 Col 组件样式 */
+#vue3-app .ant-row {
+  font-family: var(--ant-font-family) !important;
+}
+
+#vue3-app .ant-col {
+  font-family: var(--ant-font-family) !important;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  #vue3-app .ant-card-body {
+    padding: 16px !important;
+  }
+  
+  #vue3-app .ant-descriptions {
+    font-size: 14px !important;
+  }
+  
+  #vue3-app .ant-btn {
+    height: 40px !important;
+    font-size: 14px !important;
+  }
+}
+
+/* 确保组件在微前端环境下的层级正确 */
+#vue3-app .ant-modal,
+#vue3-app .ant-drawer,
+#vue3-app .ant-message,
+#vue3-app .ant-notification,
+#vue3-app .ant-tooltip,
+#vue3-app .ant-popover,
+#vue3-app .ant-dropdown {
+  z-index: 9999 !important;
+}
+
+/* 避免与主应用的样式冲突 */
+#vue3-app * {
+  box-sizing: border-box !important;
+}
+
+#vue3-app *:before,
+#vue3-app *:after {
+  box-sizing: border-box !important;
+}

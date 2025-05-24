@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
@@ -41,15 +42,28 @@ module.exports = (env, argv) => {
         template: './public/index.html',
         title: 'Enterprise Micro Frontend',
       }),
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify(isProduction ? 'production' : 'development'),
+        'process.env.REACT_APP_API_URL': JSON.stringify(process.env.REACT_APP_API_URL || 'http://localhost:8080/api'),
+        'process.env.REACT_APP_REACT_MICRO_APP_ENTRY': JSON.stringify(process.env.REACT_APP_REACT_MICRO_APP_ENTRY || '//localhost:3001'),
+        'process.env.REACT_APP_VUE3_MICRO_APP_ENTRY': JSON.stringify(process.env.REACT_APP_VUE3_MICRO_APP_ENTRY || '//localhost:3002'),
+      }),
     ],
     devServer: {
       port: 3000,
       hot: true,
       historyApiFallback: true,
+      compress: true, // 启用gzip压缩
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
         'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
+      },
+      client: {
+        overlay: {
+          errors: true,
+          warnings: false, // 关闭警告覆盖层提升性能
+        },
       },
     },
     optimization: {

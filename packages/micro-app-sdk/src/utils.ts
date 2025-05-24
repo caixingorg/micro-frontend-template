@@ -21,7 +21,7 @@ export function getPublicPath(): string {
 export function setWebpackPublicPath(): void {
   if (isQiankunEnvironment()) {
     // eslint-disable-next-line no-undef
-    __webpack_public_path__ = getPublicPath();
+    (window as any).__webpack_public_path__ = getPublicPath();
   }
 }
 
@@ -29,7 +29,7 @@ export function setWebpackPublicPath(): void {
  * 生成唯一ID
  */
 export function generateId(prefix = 'id'): string {
-  return `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  return `${prefix}_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 }
 
 /**
@@ -40,13 +40,13 @@ export function debounce<T extends (...args: any[]) => any>(
   wait: number
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout;
-  
+
   return function executedFunction(...args: Parameters<T>) {
     const later = () => {
       clearTimeout(timeout);
       func(...args);
     };
-    
+
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
   };
@@ -60,7 +60,7 @@ export function throttle<T extends (...args: any[]) => any>(
   limit: number
 ): (...args: Parameters<T>) => void {
   let inThrottle: boolean;
-  
+
   return function executedFunction(...args: Parameters<T>) {
     if (!inThrottle) {
       func(...args);
@@ -84,7 +84,7 @@ export function deepMerge<T extends Record<string, any>>(
     for (const key in source) {
       if (isObject(source[key])) {
         if (!target[key]) Object.assign(target, { [key]: {} });
-        deepMerge(target[key], source[key]);
+        deepMerge(target[key] as any, source[key] as any);
       } else {
         Object.assign(target, { [key]: source[key] });
       }
@@ -143,7 +143,7 @@ export function formatError(error: Error | string): string {
   if (typeof error === 'string') {
     return error;
   }
-  
+
   return `${error.name}: ${error.message}${
     error.stack ? `\n${error.stack}` : ''
   }`;

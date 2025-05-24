@@ -8,13 +8,59 @@ export interface UseMicroAppOptions {
    */
   name: string;
   /**
-   * 容器选择器
+   * 容器选择器或DOM元素
    */
-  container?: string;
+  container?: string | HTMLElement;
   /**
    * 是否自动加载
    */
   autoLoad?: boolean;
+  /**
+   * 传递给微应用的属性
+   */
+  props?: Record<string, any>;
+  /**
+   * 微应用加载配置
+   */
+  configuration?: {
+    /**
+     * 是否开启沙箱
+     * @default true
+     */
+    sandbox?: boolean | {
+      /**
+       * 是否开启严格样式隔离
+       * @default false
+       */
+      strictStyleIsolation?: boolean;
+      /**
+       * 是否开启实验性样式隔离
+       * @default false
+       */
+      experimentalStyleIsolation?: boolean;
+    };
+    /**
+     * 是否为单实例场景
+     * @default false
+     */
+    singular?: boolean;
+    /**
+     * 自定义fetch方法
+     */
+    fetch?: typeof window.fetch;
+    /**
+     * 自定义获取publicPath的方法
+     */
+    getPublicPath?: (entry: string) => string;
+    /**
+     * 自定义获取模板的方法
+     */
+    getTemplate?: (tpl: string) => string;
+    /**
+     * 自定义排除资源的方法
+     */
+    excludeAssetFilter?: (assetUrl: string) => boolean;
+  };
   /**
    * 加载完成回调
    */
@@ -61,35 +107,63 @@ export interface UseMicroAppReturn {
 }
 
 export const useMicroApp = (options: UseMicroAppOptions): UseMicroAppReturn => {
-  const { name, container, autoLoad = true, onLoad, onError, onUnload } = options;
-  
+  const { name, container, props, configuration, autoLoad = true, onLoad, onError, onUnload } = options;
+
   const [instance, setInstance] = useState<MicroAppInstance | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
-    if (loading || instance) return;
-
     try {
       setLoading(true);
       setError(null);
 
-      const loadedInstance = await microAppManager.loadApp(name, container);
-      
+      // 检查微应用是否已经通过 qiankun 路由加载
+      const existingInstance = microAppManager.getInstance(name);
+      if (existingInstance) {
+        console.log(`[useMicroApp] Found existing instance for ${name}`);
+        setInstance(existingInstance);
+        onLoad?.(existingInstance);
+        return;
+      }
+
+      // 等待一段时间让 qiankun 路由系统加载微应用
+      console.log(`[useMicroApp] Waiting for qiankun router to load ${name}...`);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const loadedInstance = microAppManager.getInstance(name);
       if (loadedInstance) {
+        console.log(`[useMicroApp] Found instance loaded by qiankun router for ${name}`);
         setInstance(loadedInstance);
         onLoad?.(loadedInstance);
       } else {
-        throw new Error(`Failed to load micro app: ${name}`);
+        // 如果路由系统没有加载，则手动加载
+        console.log(`[useMicroApp] Manually loading ${name}...`);
+        const defaultContainer = container || '#container';
+        const manualInstance = await microAppManager.loadApp(
+          name, 
+          defaultContainer, 
+          props, 
+          configuration
+        );
+        
+        if (manualInstance) {
+          console.log(`[useMicroApp] Successfully loaded ${name} manually`);
+          setInstance(manualInstance);
+          onLoad?.(manualInstance);
+        } else {
+          throw new Error(`Failed to load micro app: ${name}`);
+        }
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      console.error(`[useMicroApp] Error loading ${name}:`, errorMessage);
       setError(errorMessage);
       onError?.(err instanceof Error ? err : new Error(errorMessage));
     } finally {
       setLoading(false);
     }
-  }, [name, container, loading, instance, onLoad, onError]);
+  }, [name, container, props, configuration, onLoad, onError]);
 
   const unload = useCallback(async () => {
     if (!instance) return;
@@ -122,7 +196,7 @@ export const useMicroApp = (options: UseMicroAppOptions): UseMicroAppReturn => {
         unload();
       }
     };
-  }, [autoLoad]); // 只在 autoLoad 变化时执行
+  }, [autoLoad, load, unload, instance]); // 添加依赖项
 
   return {
     instance,

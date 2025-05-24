@@ -11,7 +11,7 @@ module.exports = (env, argv) => {
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: isProduction ? '[name].[contenthash].js' : '[name].js',
-      publicPath: isProduction ? '/react-micro-app/' : '//localhost:3001/',
+      publicPath: isProduction ? '/react-micro-app/' : 'http://localhost:3001/',
       clean: true,
       library: `${packageName}-[name]`,
       libraryTarget: 'umd',
@@ -51,10 +51,15 @@ module.exports = (env, argv) => {
       port: 3001,
       hot: true,
       historyApiFallback: true,
+      allowedHosts: 'all',
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
         'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
+        'Access-Control-Allow-Credentials': 'false',
+      },
+      client: {
+        webSocketURL: 'ws://localhost:3001/ws',
       },
     },
     optimization: {

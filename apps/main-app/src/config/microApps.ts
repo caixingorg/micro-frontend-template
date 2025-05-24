@@ -1,12 +1,20 @@
-import type { MicroAppConfig } from '@enterprise/shared-types';
+import { ENV } from './env';
+
+export interface MicroAppConfig {
+  name: string;
+  entry: string;
+  container: string;
+  activeRule: string;
+  props?: Record<string, any>;
+}
+
+const env = ENV[process.env.NODE_ENV as keyof typeof ENV || 'development'];
 
 export const microApps: MicroAppConfig[] = [
   {
     name: 'react-micro-app',
-    entry: process.env.NODE_ENV === 'development' 
-      ? '//localhost:3001' 
-      : '/react-micro-app',
-    container: '#react-micro-app-container',
+    entry: env.REACT_MICRO_APP,
+    container: '#micro-app-container',
     activeRule: '/react-app',
     props: {
       routerBase: '/react-app',
@@ -14,13 +22,20 @@ export const microApps: MicroAppConfig[] = [
   },
   {
     name: 'vue3-micro-app',
-    entry: process.env.NODE_ENV === 'development' 
-      ? '//localhost:3002' 
-      : '/vue3-micro-app',
-    container: '#vue3-micro-app-container',
+    entry: env.VUE3_MICRO_APP,
+    container: '#micro-app-container',
     activeRule: '/vue3-app',
     props: {
       routerBase: '/vue3-app',
+    },
+  },
+  {
+    name: 'vue2-micro-app',
+    entry: env.VUE2_MICRO_APP,
+    container: '#micro-app-container',
+    activeRule: '/vue2-app',
+    props: {
+      routerBase: '/vue2-app',
     },
   },
 ];
@@ -41,6 +56,15 @@ export const microAppRoutes = [
     microApp: 'vue3-micro-app',
     meta: {
       title: 'Vue3微应用',
+      icon: 'vue',
+    },
+  },
+  {
+    path: '/vue2-app/*',
+    name: 'Vue2应用',
+    microApp: 'vue2-micro-app',
+    meta: {
+      title: 'Vue2微应用',
       icon: 'vue',
     },
   },

@@ -3,13 +3,11 @@ import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux';
 
 import userSlice from './slices/userSlice';
 import appSlice from './slices/appSlice';
-import microAppSlice from './slices/microAppSlice';
 
 export const store = configureStore({
   reducer: {
     user: userSlice,
     app: appSlice,
-    microApp: microAppSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -13,6 +13,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.6.1",
     "@enterprise/micro-app-sdk": "workspace:*",
     "@enterprise/shared-types": "workspace:*",
     "@enterprise/shared-utils": "workspace:*",

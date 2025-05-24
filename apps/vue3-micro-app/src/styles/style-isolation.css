@@ -1,0 +1,172 @@
+/* Vue3 微应用样式隔离文件 */
+
+/* 重置样式，防止主应用样式影响 */
+#vue3-app {
+  /* 重置所有可能冲突的样式 */
+  all: initial;
+  
+  /* 设置基本样式 */
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.5715;
+  color: rgba(0, 0, 0, 0.85);
+  background: transparent;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* 确保所有子元素继承正确的样式 */
+#vue3-app *,
+#vue3-app *::before,
+#vue3-app *::after {
+  box-sizing: border-box;
+}
+
+/* 重置基本元素样式 */
+#vue3-app h1,
+#vue3-app h2,
+#vue3-app h3,
+#vue3-app h4,
+#vue3-app h5,
+#vue3-app h6 {
+  margin: 0;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+#vue3-app p {
+  margin: 0 0 1em 0;
+}
+
+#vue3-app a {
+  color: #1890ff;
+  text-decoration: none;
+  background-color: transparent;
+  outline: none;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+#vue3-app a:hover {
+  color: #40a9ff;
+}
+
+#vue3-app button {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  margin: 0;
+  overflow: visible;
+  text-transform: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+/* 确保表单元素样式正确 */
+#vue3-app input,
+#vue3-app textarea,
+#vue3-app select {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  padding: 4px 8px;
+  background-color: #fff;
+  transition: all 0.3s;
+}
+
+#vue3-app input:focus,
+#vue3-app textarea:focus,
+#vue3-app select:focus {
+  border-color: #40a9ff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+/* 确保列表样式正确 */
+#vue3-app ul,
+#vue3-app ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* 确保表格样式正确 */
+#vue3-app table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+}
+
+#vue3-app th,
+#vue3-app td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* 防止样式泄露到主应用 */
+.vue3-micro-app-container {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Ant Design 组件样式前缀隔离 */
+.vue3-micro .vue3-micro-btn {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* 响应式断点 */
+@media (max-width: 575px) {
+  #vue3-app {
+    font-size: 12px;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+  #vue3-app {
+    font-size: 13px;
+  }
+}
+
+@media (min-width: 768px) {
+  #vue3-app {
+    font-size: 14px;
+  }
+}
+
+/* 防止主应用的全局样式影响 */
+#vue3-app .ant-btn,
+#vue3-app .ant-input,
+#vue3-app .ant-select,
+#vue3-app .ant-card,
+#vue3-app .ant-table,
+#vue3-app .ant-form,
+#vue3-app .ant-menu {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+/* 确保微应用的滚动条样式 */
+#vue3-app ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+#vue3-app ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+#vue3-app ::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+#vue3-app ::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

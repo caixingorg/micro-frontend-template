@@ -57,8 +57,24 @@ export const MicroAppWrapper: React.FC<MicroAppWrapperProps> = ({
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // 显示容器
-    const container = document.getElementById(containerId);
+    // 创建或获取微应用容器
+    let container = document.getElementById(containerId);
+
+    if (!container) {
+      // 如果容器不存在，创建一个新的容器
+      container = document.createElement('div');
+      container.id = containerId;
+      container.style.width = '100%';
+      container.style.height = '100%';
+      container.style.minHeight = '400px';
+      container.style.overflow = 'hidden';
+
+      // 将容器添加到当前组件的 ref 中
+      if (containerRef.current) {
+        containerRef.current.appendChild(container);
+      }
+    }
+
     if (container) {
       container.style.display = 'block';
       setMounted(true);
@@ -66,14 +82,13 @@ export const MicroAppWrapper: React.FC<MicroAppWrapperProps> = ({
     }
 
     return () => {
-      // 隐藏容器
+      // 清理容器但不移除，避免影响微应用的卸载
       if (container) {
-        container.style.display = 'none';
         setMounted(false);
         onUnload?.();
       }
     };
-  }, [containerId, onLoad, onUnload]);
+  }, [containerId]); // 移除onLoad和onUnload依赖，避免无限循环
 
   const defaultStyle: React.CSSProperties = {
     width: '100%',

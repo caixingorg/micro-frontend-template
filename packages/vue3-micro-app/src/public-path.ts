@@ -1,0 +1,7 @@
+// For qiankun webpack public path settings
+// @ts-ignore
+if (window.__POWERED_BY_QIANKUN__) {
+  // @ts-ignore
+  __webpack_public_path__ = window.__INJECTED_PUBLIC_PATH_BY_QIANKUN__;
+  console.log('[Vue3 Micro App] public path set to:', __webpack_public_path__);
+}

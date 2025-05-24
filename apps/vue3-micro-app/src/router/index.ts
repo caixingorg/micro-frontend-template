@@ -1,31 +1,47 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import type { RouteRecordRaw } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router'
+import HomeView from '../views/HomeView.vue'
 
-import Home from '@/pages/Home.vue';
-import Products from '@/pages/Products.vue';
-import Orders from '@/pages/Orders.vue';
-
-const routes: RouteRecordRaw[] = [
+export const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home,
+    name: 'home',
+    component: HomeView,
+    meta: {
+      title: '首页',
+    },
   },
   {
-    path: '/products',
-    name: 'Products',
-    component: Products,
+    path: '/about',
+    name: 'about',
+    // route level code-splitting
+    // this generates a separate chunk (About.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import('../views/AboutView.vue'),
+    meta: {
+      title: '关于',
+    },
   },
   {
-    path: '/orders',
-    name: 'Orders',
-    component: Orders,
+    path: '/features',
+    name: 'features',
+    component: () => import('../views/FeaturesView.vue'),
+    meta: {
+      title: '功能特性',
+    },
   },
-];
+]
 
-export function createAppRouter(base = '/vue3-app') {
-  return createRouter({
-    history: createWebHistory(base),
-    routes,
-  });
-}
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes,
+})
+
+router.beforeEach((to, from, next) => {
+  // 设置页面标题
+  if (to.meta?.title) {
+    document.title = `${to.meta.title} - Vue3微应用`
+  }
+  next()
+})
+
+export default router
