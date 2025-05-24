@@ -1,0 +1,133 @@
+/* 微应用容器样式优化 - 固定高度方案 */
+
+.micro-app-container {
+  /* 基础布局 */
+  width: 100%;
+  position: relative;
+  border-radius: 8px;
+  background-color: #fff;
+  box-sizing: border-box;
+  
+  /* 滚动条优化 */
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+  
+  /* 平滑过渡 */
+  transition: height 0.2s ease-in-out;
+}
+
+/* Webkit浏览器滚动条样式 */
+.micro-app-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.micro-app-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.micro-app-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.micro-app-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* 加载状态样式 */
+.micro-app-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #999;
+  z-index: 1000;
+  display: none;
+}
+
+.micro-app-loading.show {
+  display: block;
+}
+
+/* 微应用内容区域 */
+.micro-app-container > div:not(.micro-app-loading) {
+  min-height: 100%;
+  width: 100%;
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+  .micro-app-container {
+    border-radius: 4px;
+  }
+  
+  .micro-app-container::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+/* 微应用iframe样式优化（如果使用iframe模式） */
+.micro-app-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #fff;
+}
+
+/* 防止内容溢出导致布局问题 */
+.micro-app-container * {
+  box-sizing: border-box;
+}
+
+/* 确保子应用内容不会超出容器边界 */
+.micro-app-container > div {
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+/* 加载动画增强 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.micro-app-container.loaded {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* 错误状态样式 */
+.micro-app-container.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff4d4f;
+  background-color: #fff2f0;
+  border: 1px dashed #ffccc7;
+}
+
+.micro-app-container.error .error-content {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.micro-app-container.error .error-content h3 {
+  margin-bottom: 8px;
+  color: #ff4d4f;
+}
+
+.micro-app-container.error .error-content p {
+  color: #999;
+  margin: 0;
+}

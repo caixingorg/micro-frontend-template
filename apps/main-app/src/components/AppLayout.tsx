@@ -1,21 +1,60 @@
-import React from 'react';
-import { Layout } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Layout, theme, Spin } from 'antd';
 import { useLocation } from 'react-router-dom';
 
-import { useAppSelector } from '@/store';
+import { useAppSelector, useAppDispatch } from '@/store';
+import { setBreadcrumb, setSelectedKeys } from '@/store/slices/appSlice';
 import { useResponsive } from '@/hooks/useResponsive';
 import Header from './Layout/Header';
 import Sidebar from './Layout/Sidebar';
 import Breadcrumb from './Layout/Breadcrumb';
 import MicroAppContainer from './MicroAppContainer';
+import { microAppRoutes } from '@/config/microApps';
 
 const { Content } = Layout;
 
 const AppLayout: React.FC = () => {
+  const dispatch = useAppDispatch();
   const location = useLocation();
   const { collapsed } = useAppSelector(state => state.app);
+  const [loading, setLoading] = useState(false);
   const responsive = useResponsive();
   const isHome = location.pathname === '/';
+
+  const {
+    token: { colorBgContainer, borderRadius },
+  } = theme.useToken();
+
+  useEffect(() => {
+    // 根据当前路径更新面包屑和选中的菜单项
+    const pathname = location.pathname;
+
+    // 更新选中的菜单项
+    const selectedKeys = [pathname];
+    dispatch(setSelectedKeys(selectedKeys));
+
+    // 更新面包屑
+    const breadcrumbItems = generateBreadcrumb(pathname);
+    dispatch(setBreadcrumb(breadcrumbItems));
+  }, [location.pathname, dispatch]);
+
+  const generateBreadcrumb = (pathname: string) => {
+    const items = [{ title: '首页', path: '/' }];
+
+    // 查找匹配的微应用路由
+    const matchedRoute = microAppRoutes.find(route =>
+      pathname.startsWith(route.path.replace('/*', ''))
+    );
+
+    if (matchedRoute) {
+      items.push({
+        title: matchedRoute.meta?.title || matchedRoute.name,
+        path: matchedRoute.path.replace('/*', ''),
+      });
+    }
+
+    return items;
+  };
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -38,29 +77,42 @@ const AppLayout: React.FC = () => {
             style={{
               padding: responsive.isMobile ? 16 : 24,
               margin: 0,
-              minHeight: 'calc(100vh - 180px)',
-              background: '#ffffff',
-              borderRadius: 8,
+              height: responsive.isMobile ? 'calc(100vh - 140px)' : 'calc(100vh - 180px)', // 固定高度，配合MicroAppContainer
+              background: colorBgContainer,
+              borderRadius: borderRadius,
               boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+              transition: 'all 0.3s ease',
               overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column',
             }}
           >
-            {isHome ? (
+            <Spin spinning={loading} size="large">
               <div
                 style={{
-                  textAlign: 'center',
-                  padding: '60px 20px',
-                  color: '#666',
+                  minHeight: '100%',
+                  animation: 'fadeIn 0.5s ease-in-out',
                 }}
+                className="fade-in"
               >
-                <h1 style={{ fontSize: '2em', marginBottom: '16px' }}>
-                  欢迎使用微前端系统
-                </h1>
-                <p>请从左侧菜单选择应用进行体验</p>
+                {isHome ? (
+                  <div
+                    style={{
+                      textAlign: 'center',
+                      padding: '60px 20px',
+                      color: '#666',
+                    }}
+                  >
+                    <h1 style={{ fontSize: '2em', marginBottom: '16px' }}>
+                      欢迎使用微前端系统
+                    </h1>
+                    <p>请从左侧菜单选择应用进行体验</p>
+                  </div>
+                ) : (
+                  <MicroAppContainer />
+                )}
               </div>
-            ) : (
-              <MicroAppContainer />
-            )}
+            </Spin>
           </Content>
         </Layout>
       </Layout>
