@@ -24,6 +24,9 @@ declare global {
 
 let instance: Vue | null = null;
 
+// 全局状态通信
+let globalStateActions: any = null;
+
 function render(props: MicroAppProps = {}) {
   const { container, routerBase } = props;
   const router = createRouter(routerBase);
@@ -33,17 +36,28 @@ function render(props: MicroAppProps = {}) {
     render: (h) => h(App),
   });
 
-  // qiankun最简单的容器处理逻辑
-  const containerElement = container || document.getElementById('app');
-  
+  // 关键优化：优先在 container 内部寻找挂载点，支持 ShadowDOM/Scoped CSS
+  const ROOT_ID = 'vue2-micro-app-root';
+  const containerElement = container
+    ? container.querySelector(`#${ROOT_ID}`)
+    : document.getElementById(ROOT_ID);
+
   if (containerElement) {
     instance.$mount(containerElement);
   } else {
-    console.error('[Vue2 Micro App] Container not found');
+    // 降级处理：如果在 container 中找不到挂载点，尝试直接挂载
+    if (container) {
+      console.warn(`[Vue2 Micro App] Target #${ROOT_ID} not found in container, mounting to container directly`);
+      const newAppDiv = document.createElement('div');
+      newAppDiv.id = ROOT_ID;
+      container.appendChild(newAppDiv);
+      instance.$mount(newAppDiv);
+    } else {
+      console.error(`[Vue2 Micro App] Container #${ROOT_ID} not found`);
+    }
   }
-
-  console.log('[Vue2 Micro App] Mounted to container:', containerElement);
 }
+
 
 function unmountApp() {
   if (instance) {
@@ -62,8 +76,22 @@ export async function bootstrap() {
   console.log('[Vue2 Micro App] Bootstrap');
 }
 
-export async function mount(props: MicroAppProps) {
+export async function mount(props: any) {
   console.log('[Vue2 Micro App] Mount', props);
+
+  // 处理全局状态
+  if (props.onGlobalStateChange) {
+    props.onGlobalStateChange((state: any, prev: any) => {
+      console.log('[Vue2 Micro App] Global state changed:', state, prev);
+      // 这里可以触发 Vuex action 或 EventBus
+    });
+    globalStateActions = {
+      setGlobalState: props.setGlobalState
+    };
+    // 注入全局属性 (可选)
+    Vue.prototype.$globalState = globalStateActions;
+  }
+
   render(props);
 }
 

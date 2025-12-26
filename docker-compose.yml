@@ -1,102 +1,46 @@
 version: '3.8'
 
 services:
-  # 微前端应用
-  micro-frontend:
+  main-app:
     build:
       context: .
-      dockerfile: Dockerfile
-      target: production
+      dockerfile: apps/main-app/Dockerfile
     ports:
-      - "80:80"
-    environment:
-      - NODE_ENV=production
-    volumes:
-      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      - "8080:80"
+    depends_on:
+      - vue3-micro-app
+      - react-micro-app
+      - vue2-micro-app
+    networks:
+      - micro-frontend-net
 
-  # 开发环境服务
-  dev-main-app:
+  vue3-micro-app:
     build:
       context: .
-      dockerfile: Dockerfile
-      target: base
+      dockerfile: apps/vue3-micro-app/Dockerfile
     ports:
-      - "3000:3000"
-    volumes:
-      - .:/app
-      - /app/node_modules
-    command: pnpm --filter main-app dev
-    environment:
-      - NODE_ENV=development
-    profiles:
-      - dev
+      - "3003:80"
+    networks:
+      - micro-frontend-net
 
-  dev-react-micro-app:
+  react-micro-app:
     build:
       context: .
-      dockerfile: Dockerfile
-      target: base
+      dockerfile: apps/react-micro-app/Dockerfile
     ports:
-      - "3001:3001"
-    volumes:
-      - .:/app
-      - /app/node_modules
-    command: pnpm --filter react-micro-app dev
-    environment:
-      - NODE_ENV=development
-    profiles:
-      - dev
+      - "3004:80"
+    networks:
+      - micro-frontend-net
 
-  dev-vue3-micro-app:
+  vue2-micro-app:
     build:
       context: .
-      dockerfile: Dockerfile
-      target: base
+      dockerfile: apps/vue2-micro-app/Dockerfile
     ports:
-      - "3002:3002"
-    volumes:
-      - .:/app
-      - /app/node_modules
-    command: pnpm --filter vue3-micro-app dev
-    environment:
-      - NODE_ENV=development
-    profiles:
-      - dev
-
-  # 数据库 (可选)
-  postgres:
-    image: postgres:15-alpine
-    environment:
-      POSTGRES_DB: micro_frontend
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    profiles:
-      - db
-
-  # Redis (可选)
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    profiles:
-      - cache
-
-volumes:
-  postgres_data:
-  redis_data:
+      - "3002:80"
+    networks:
+      - micro-frontend-net
 
 networks:
-  default:
-    name: micro-frontend-network
+  micro-frontend-net:
+    driver: bridge
