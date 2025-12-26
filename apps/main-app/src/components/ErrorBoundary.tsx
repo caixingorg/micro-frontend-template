@@ -5,6 +5,7 @@ interface Props {
   children: ReactNode;
   appName?: string;
   fallback?: ReactNode;
+  onRetry?: () => void; // 新增重试回调
 }
 
 interface State {
@@ -29,7 +30,10 @@ class ErrorBoundary extends Component<Props, State> {
 
   private handleReload = () => {
     this.setState({ hasError: false, error: null });
-    window.location.reload();
+    // 如果父组件传递了onRetry，则调用；否则默认只重置状态（可能不足以恢复，取决于父组件逻辑）
+    if (this.props.onRetry) {
+      this.props.onRetry();
+    }
   };
 
   public render() {
@@ -39,20 +43,21 @@ class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div style={{ padding: '20px' }}>
+        <div style={{ padding: '20px', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Alert
             message="应用加载失败"
             description={
               <div>
                 <p>{this.state.error?.message || '未知错误'}</p>
-                <Button
-                  type="primary"
-                  danger
-                  onClick={this.handleReload}
-                  style={{ marginTop: '16px' }}
-                >
-                  重新加载
-                </Button>
+                <div style={{ marginTop: 16 }}>
+                  <Button
+                    type="primary"
+                    danger
+                    onClick={this.handleReload}
+                  >
+                    尝试恢复
+                  </Button>
+                </div>
               </div>
             }
             type="error"

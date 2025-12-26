@@ -45,7 +45,7 @@ const Home: React.FC = () => {
       <Card style={{ marginBottom: 24 }}>
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
           <div style={{ textAlign: 'center' }}>
-            <Title level={2}>欢迎使用 React 微应用</Title>
+            <Title level={2}>欢迎使用 React 微应用1</Title>
             <Paragraph>
               这是一个基于 React 18 + TypeScript + Ant Design 构建的微前端应用示例。
               它展示了如何在 qiankun 框架中集成 React 应用。

@@ -9,6 +9,7 @@ import Header from './Layout/Header';
 import Sidebar from './Layout/Sidebar';
 import Breadcrumb from './Layout/Breadcrumb';
 import MicroAppContainer from './MicroAppContainer';
+import { PerformanceMonitor } from './PerformanceMonitor';
 import { microAppRoutes } from '@/config/microApps';
 
 const { Content } = Layout;
@@ -57,65 +58,39 @@ const AppLayout: React.FC = () => {
   };
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout style={{ minHeight: '100vh' }} hasSider>
       <Sidebar />
-      <Layout
-        style={{
-          marginLeft: responsive.isMobile ? 0 : (collapsed ? 80 : 256),
-          transition: 'margin-left 0.2s ease-in-out',
-        }}
-      >
+      <Layout style={{ marginLeft: responsive.isMobile ? 0 : (collapsed ? 80 : 256), transition: 'all 0.2s' }}>
         <Header />
-        <Layout
+
+        <Content
           style={{
-            padding: responsive.isMobile ? '0 16px 16px' : '0 24px 24px',
-            background: 'transparent',
+            margin: '24px 16px',
+            padding: 24,
+            background: colorBgContainer,
+            borderRadius: borderRadius,
+            minHeight: 280,
+            overflow: 'auto', // 允许滚动，防止内容截断
+            position: 'relative'
           }}
         >
-          <Breadcrumb />
-          <Content
-            style={{
-              padding: responsive.isMobile ? 16 : 24,
-              margin: 0,
-              height: responsive.isMobile ? 'calc(100vh - 140px)' : 'calc(100vh - 180px)', // 固定高度，配合MicroAppContainer
-              background: colorBgContainer,
-              borderRadius: borderRadius,
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
-              transition: 'all 0.3s ease',
-              overflow: 'hidden',
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
-            <Spin spinning={loading} size="large">
-              <div
-                style={{
-                  minHeight: '100%',
-                  animation: 'fadeIn 0.5s ease-in-out',
-                }}
-                className="fade-in"
-              >
-                {isHome ? (
-                  <div
-                    style={{
-                      textAlign: 'center',
-                      padding: '60px 20px',
-                      color: '#666',
-                    }}
-                  >
-                    <h1 style={{ fontSize: '2em', marginBottom: '16px' }}>
-                      欢迎使用微前端系统
-                    </h1>
-                    <p>请从左侧菜单选择应用进行体验</p>
-                  </div>
-                ) : (
-                  <MicroAppContainer />
-                )}
+          {/* 移除 Spin 组件的包裹，避免其 div 结构导致 flex 布局塌陷 
+               加载状态由 MicroAppContainer 内部或 Global Loading 处理 */}
+          <div style={{ height: '100%', width: '100%' }}>
+            {isHome ? (
+              <div style={{ textAlign: 'center', padding: '100px 0', color: '#666' }}>
+                <h1>欢迎使用微前端系统</h1>
+                <p>请从左侧菜单选择应用</p>
               </div>
-            </Spin>
-          </Content>
-        </Layout>
+            ) : (
+              <MicroAppContainer />
+            )}
+          </div>
+        </Content>
       </Layout>
+
+      {/* 性能监控浮动按钮 */}
+      <PerformanceMonitor />
     </Layout>
   );
 };

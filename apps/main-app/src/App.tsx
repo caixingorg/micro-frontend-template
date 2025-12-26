@@ -1,48 +1,28 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ConfigProvider, theme } from 'antd';
-import { registerMicroApps, start } from 'qiankun';
 import zhCN from 'antd/locale/zh_CN';
 
 import { useAppSelector } from '@/store';
 import AppLayout from './components/AppLayout';
 import { microApps } from './config/microApps';
+import { microAppManager } from './micro/MicroAppManager';
 
 const App: React.FC = () => {
   const { theme: appTheme } = useAppSelector(state => state.app);
 
   useEffect(() => {
-    // 注册微应用
-    registerMicroApps(microApps, {
-      beforeLoad: (app) => {
-        console.log(`Loading micro app: ${app.name}`);
-        return Promise.resolve();
-      },
-      afterMount: (app) => {
-        console.log(`Mounted micro app: ${app.name}`);
-        return Promise.resolve();
-      },
-      beforeUnmount: (app) => {
-        console.log(`Unmounting micro app: ${app.name}`);
-        return Promise.resolve();
-      },
-    });
+    // 初始化微应用管理器
+    const initializeMicroApps = async () => {
+      try {
+        await microAppManager.initialize(microApps);
+        console.log('[App] MicroAppManager initialized successfully');
+      } catch (error) {
+        console.error('[App] Failed to initialize MicroAppManager:', error);
+      }
+    };
 
-    // 启动qiankun
-    start({
-      prefetch: false, // 关闭预加载，按需加载
-      sandbox: {
-        strictStyleIsolation: false,
-        experimentalStyleIsolation: true, // 开启样式隔离
-        loose: true, // 宽松沙箱模式，提高兼容性
-      },
-      singular: false, // 允许多个微应用同时存在
-      excludeAssetFilter: (assetUrl) => {
-        // 排除主应用的样式文件，避免被子应用影响
-        const excludeAssets = ['/static/css/', '/assets/', '/styles/'];
-        return excludeAssets.some(asset => assetUrl.includes(asset));
-      },
-    });
+    initializeMicroApps();
   }, []);
 
   return (

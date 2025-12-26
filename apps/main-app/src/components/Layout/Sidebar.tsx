@@ -1,15 +1,18 @@
-import React, { useEffect } from 'react';
-import { Layout, Menu } from 'antd';
+import React from 'react';
+import { Layout, Menu, theme } from 'antd';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   HomeOutlined,
   AppstoreOutlined,
   SettingOutlined,
-  UserOutlined,
+  DashboardOutlined,
 } from '@ant-design/icons';
-import { useNavigate, useLocation } from 'react-router-dom';
+import type { MenuProps } from 'antd';
 
 import { useAppSelector, useAppDispatch } from '@/store';
-import { setOpenKeys, setSelectedKeys } from '@/store/slices/appSlice';
+import { setSelectedKeys, setOpenKeys } from '@/store/slices/appSlice';
+import { useResponsive } from '@/hooks/useResponsive';
+import { microAppRoutes } from '@/config/microApps';
 
 const { Sider } = Layout;
 
@@ -17,33 +20,14 @@ const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
-
   const { collapsed, selectedKeys, openKeys } = useAppSelector(state => state.app);
+  const responsive = useResponsive();
 
-  // 监听路由变化，更新菜单状态
-  useEffect(() => {
-    const pathname = location.pathname;
-    
-    // 设置选中的菜单项
-    if (pathname.startsWith('/react-app')) {
-      dispatch(setSelectedKeys(['/react-app']));
-      dispatch(setOpenKeys(['/micro-apps']));
-    } else if (pathname.startsWith('/vue3-app')) {
-      dispatch(setSelectedKeys(['/vue3-app']));
-      dispatch(setOpenKeys(['/micro-apps']));
-    } else if (pathname.startsWith('/vue2-app')) {
-      dispatch(setSelectedKeys(['/vue2-app']));
-      dispatch(setOpenKeys(['/micro-apps']));
-    } else if (pathname.startsWith('/system')) {
-      dispatch(setSelectedKeys([pathname]));
-      dispatch(setOpenKeys(['/system']));
-    } else {
-      dispatch(setSelectedKeys([pathname]));
-      dispatch(setOpenKeys([]));
-    }
-  }, [location.pathname, dispatch]);
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
 
-  const menuItems = [
+  const menuItems: MenuProps['items'] = [
     {
       key: '/',
       icon: <HomeOutlined />,
@@ -53,54 +37,31 @@ const Sidebar: React.FC = () => {
       key: '/micro-apps',
       icon: <AppstoreOutlined />,
       label: '微应用',
-      children: [
-        {
-          key: '/react-app',
-          label: 'React应用',
-        },
-        {
-          key: '/vue3-app',
-          label: 'Vue3应用',
-        },
-        {
-          key: '/vue2-app',
-          label: 'Vue2应用',
-        },
-      ],
+      children: microAppRoutes.map(route => ({
+        key: route.path.replace('/*', ''),
+        icon: <DashboardOutlined />,
+        label: route.name,
+      })),
     },
     {
-      key: '/system',
+      key: '/settings',
       icon: <SettingOutlined />,
-      label: '系统管理',
-      children: [
-        {
-          key: '/system/users',
-          label: '用户管理',
-        },
-        {
-          key: '/system/roles',
-          label: '角色管理',
-        },
-        {
-          key: '/system/permissions',
-          label: '权限管理',
-        },
-      ],
-    },
-    {
-      key: '/profile',
-      icon: <UserOutlined />,
-      label: '个人中心',
+      label: '系统设置',
     },
   ];
 
-  const handleMenuClick = ({ key }: { key: string }) => {
-    navigate(key);
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+    dispatch(setSelectedKeys([e.key]));
+    navigate(e.key);
   };
 
   const handleOpenChange = (keys: string[]) => {
     dispatch(setOpenKeys(keys));
   };
+
+  if (responsive.isMobile && !collapsed) {
+    return null;
+  }
 
   return (
     <Sider
@@ -110,40 +71,81 @@ const Sidebar: React.FC = () => {
       width={256}
       collapsedWidth={80}
       style={{
-        overflow: 'auto',
-        height: '100vh',
         position: 'fixed',
         left: 0,
         top: 0,
         bottom: 0,
+        height: '100vh',
         zIndex: 1000,
-        boxShadow: '2px 0 8px rgba(0, 0, 0, 0.15)',
+        background: colorBgContainer,
+        borderRight: '1px solid #f0f0f0',
+        boxShadow: '2px 0 8px rgba(0, 0, 0, 0.06)',
         transition: 'all 0.2s ease-in-out',
       }}
     >
       <div
         style={{
           height: 64,
-          margin: '16px 16px 24px 16px',
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          borderRadius: 8,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: 'white',
-          fontWeight: 'bold',
-          fontSize: collapsed ? '14px' : '16px',
-          transition: 'all 0.3s ease',
-          cursor: 'pointer',
-          boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)',
+          borderBottom: '1px solid #f0f0f0',
+          padding: collapsed ? '0 16px' : '0 24px',
         }}
-        onClick={() => navigate('/')}
       >
-        {collapsed ? 'MF' : 'Micro Frontend'}
+        {collapsed ? (
+          <div
+            style={{
+              width: 32,
+              height: 32,
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'white',
+              fontWeight: 'bold',
+              fontSize: '14px',
+            }}
+          >
+            MF
+          </div>
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div
+              style={{
+                width: 32,
+                height: 32,
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: '14px',
+              }}
+            >
+              MF
+            </div>
+            <span
+              style={{
+                fontSize: '16px',
+                fontWeight: '600',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              微前端
+            </span>
+          </div>
+        )}
       </div>
 
       <Menu
-        theme="dark"
+        theme="light"
         mode="inline"
         selectedKeys={selectedKeys}
         openKeys={openKeys}
@@ -151,8 +153,9 @@ const Sidebar: React.FC = () => {
         onClick={handleMenuClick}
         onOpenChange={handleOpenChange}
         style={{
-          borderRight: 'none',
-          background: 'transparent',
+          border: 'none',
+          height: 'calc(100vh - 64px)',
+          overflowY: 'auto',
         }}
       />
     </Sider>

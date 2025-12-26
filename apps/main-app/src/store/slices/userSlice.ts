@@ -1,6 +1,12 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import type { UserInfo } from '@enterprise/shared-types';
-import { httpClient } from '@enterprise/shared-utils';
+
+interface UserInfo {
+  id: string;
+  username: string;
+  email?: string;
+  avatar?: string;
+  roles?: string[];
+}
 
 interface UserState {
   userInfo: UserInfo | null;
@@ -10,55 +16,61 @@ interface UserState {
 }
 
 const initialState: UserState = {
-  userInfo: null,
-  isAuthenticated: false,
+  userInfo: {
+    id: '1',
+    username: 'Admin',
+    email: 'admin@example.com',
+    avatar: '',
+    roles: ['admin'],
+  },
+  isAuthenticated: true,
   loading: false,
   error: null,
 };
 
-// 异步actions
+// 异步登录操作
 export const loginAsync = createAsyncThunk(
   'user/login',
   async (credentials: { username: string; password: string }) => {
-    const response = await httpClient.post<{
-      user: UserInfo;
-      token: string;
-    }>('/auth/login', credentials);
-    
-    // 保存token
-    localStorage.setItem('auth_token', response.token);
-    
-    return response.user;
+    // 模拟API调用
+    return new Promise<UserInfo>((resolve) => {
+      setTimeout(() => {
+        resolve({
+          id: '1',
+          username: credentials.username,
+          email: 'admin@example.com',
+          avatar: '',
+          roles: ['admin'],
+        });
+      }, 1000);
+    });
   }
 );
 
-export const logoutAsync = createAsyncThunk(
-  'user/logout',
-  async () => {
-    await httpClient.post('/auth/logout');
-    localStorage.removeItem('auth_token');
-  }
-);
-
-export const getUserInfoAsync = createAsyncThunk(
-  'user/getUserInfo',
-  async () => {
-    const response = await httpClient.get<UserInfo>('/auth/me');
-    return response;
-  }
-);
+// 异步登出操作
+export const logoutAsync = createAsyncThunk('user/logout', async () => {
+  // 模拟API调用
+  return new Promise<void>((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, 500);
+  });
+});
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    clearError: (state) => {
-      state.error = null;
+    setUserInfo: (state, action: PayloadAction<UserInfo>) => {
+      state.userInfo = action.payload;
+      state.isAuthenticated = true;
     },
-    updateUserInfo: (state, action: PayloadAction<Partial<UserInfo>>) => {
-      if (state.userInfo) {
-        state.userInfo = { ...state.userInfo, ...action.payload };
-      }
+    clearUserInfo: (state) => {
+      state.userInfo = null;
+      state.isAuthenticated = false;
+    },
+    setError: (state, action: PayloadAction<string | null>) => {
+      state.error = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -78,25 +90,21 @@ const userSlice = createSlice({
         state.error = action.error.message || '登录失败';
       })
       // 登出
+      .addCase(logoutAsync.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(logoutAsync.fulfilled, (state) => {
+        state.loading = false;
         state.userInfo = null;
         state.isAuthenticated = false;
       })
-      // 获取用户信息
-      .addCase(getUserInfoAsync.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(getUserInfoAsync.fulfilled, (state, action) => {
+      .addCase(logoutAsync.rejected, (state, action) => {
         state.loading = false;
-        state.userInfo = action.payload;
-        state.isAuthenticated = true;
-      })
-      .addCase(getUserInfoAsync.rejected, (state) => {
-        state.loading = false;
-        state.isAuthenticated = false;
+        state.error = action.error.message || '登出失败';
       });
   },
 });
 
-export const { clearError, updateUserInfo } = userSlice.actions;
+export const { setUserInfo, clearUserInfo, setError } = userSlice.actions;
+
 export default userSlice.reducer;

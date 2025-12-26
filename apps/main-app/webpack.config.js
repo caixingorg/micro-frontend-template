@@ -50,7 +50,7 @@ module.exports = (env, argv) => {
       }),
     ],
     devServer: {
-      port: 3000,
+      port: 3009,
       hot: true,
       historyApiFallback: true,
       compress: true, // 启用gzip压缩

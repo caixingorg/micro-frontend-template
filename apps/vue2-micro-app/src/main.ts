@@ -33,46 +33,27 @@ function render(props: MicroAppProps = {}) {
     render: (h) => h(App),
   });
 
-  // 容器选择逻辑
-  let containerElement: Element | null = null;
-
-  if (container) {
-    // 微前端环境：qiankun会传入容器，直接使用
-    containerElement = container;
-  } else {
-    // 独立运行：查找默认容器
-    containerElement = document.getElementById('vue2-micro-app-root');
-  }
-
-  console.log('[Vue2 Micro App] Mounting to container:', containerElement);
-
+  // qiankun最简单的容器处理逻辑
+  const containerElement = container || document.getElementById('app');
+  
   if (containerElement) {
-    // Vue2的$mount需要一个新的DOM元素
-    const mountNode = document.createElement('div');
-    containerElement.appendChild(mountNode);
-    instance.$mount(mountNode);
+    instance.$mount(containerElement);
   } else {
     console.error('[Vue2 Micro App] Container not found');
   }
+
+  console.log('[Vue2 Micro App] Mounted to container:', containerElement);
 }
 
 function unmountApp() {
   if (instance) {
     instance.$destroy();
-    if (instance.$el && instance.$el.parentNode) {
-      instance.$el.parentNode.removeChild(instance.$el);
-    }
     instance = null;
   }
 }
 
-// 检查是否在qiankun环境中
-function isQiankunEnvironment(): boolean {
-  return !!window.__POWERED_BY_QIANKUN__;
-}
-
 // 独立运行时直接渲染
-if (!isQiankunEnvironment()) {
+if (!window.__POWERED_BY_QIANKUN__) {
   render();
 }
 

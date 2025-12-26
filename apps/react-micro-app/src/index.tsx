@@ -16,25 +16,42 @@ declare global {
 let root: any = null;
 
 function render(props: any = {}) {
-  const { container, routerBase } = props;
-  
-  // 获取容器元素
-  let containerElement: Element | null = null;
-  
-  if (container) {
-    // 微前端环境下，qiankun会传入容器
-    containerElement = container.querySelector('#react-micro-app-root') || container;
-  } else {
-    // 独立运行时，使用默认容器
-    containerElement = document.getElementById('react-micro-app-root') || document.getElementById('root');
+  const { container, routerBase, globalState } = props;
+
+  if (globalState) {
+    console.log('[React Micro App] GlobalState connected', globalState);
+    // 这里可以 dispatch 到 Redux 或 Context
   }
 
-  console.log('[React Micro App] Rendering with container:', containerElement);
+  // 关键：在 Qiankun 提供的 container 中寻找挂载点
+  // 确保在 ShadowDOM 或 Scope Isolation 下正确挂载
+  const ROOT_ID = 'react-micro-app-root';
+  const containerElement = container
+    ? container.querySelector(`#${ROOT_ID}`)
+    : document.getElementById(ROOT_ID);
 
   if (!containerElement) {
+    // 降级策略
+    if (container) {
+      console.warn(`[React Micro App] Target #${ROOT_ID} not found, mounting to container directly`);
+      const newRoot = document.createElement('div');
+      newRoot.id = ROOT_ID;
+      container.appendChild(newRoot);
+
+      root = createRoot(newRoot);
+      root.render(
+        <ConfigProvider locale={zhCN}>
+          <App routerBase={routerBase} />
+        </ConfigProvider>
+      );
+      return;
+    }
+
     console.error('[React Micro App] Container not found');
     return;
   }
+
+  console.log('[React Micro App] Rendering to container:', containerElement);
 
   root = createRoot(containerElement);
   root.render(
@@ -51,13 +68,8 @@ function unmountApp() {
   }
 }
 
-// 判断是否在qiankun环境中
-const isQiankunEnvironment = () => {
-  return window.__POWERED_BY_QIANKUN__ || false;
-};
-
 // 独立运行时直接渲染
-if (!isQiankunEnvironment()) {
+if (!window.__POWERED_BY_QIANKUN__) {
   render();
 }
 

@@ -1,6 +1,6 @@
 export const ENV = {
   development: {
-    REACT_MICRO_APP: '//localhost:3001',
+    REACT_MICRO_APP: '//localhost:3004',
     VUE2_MICRO_APP: '//localhost:3002',
     VUE3_MICRO_APP: '//localhost:3003',
   },

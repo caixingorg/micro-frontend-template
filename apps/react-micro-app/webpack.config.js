@@ -1,17 +1,40 @@
 const path = require('path');
+const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const packageName = require('./package.json').name;
 
-module.exports = (env, argv) => {
-  const isProduction = argv.mode === 'production';
+// 简单的 .env 解析函数
+const parseEnv = (mode) => {
+  const envPath = path.resolve(__dirname, `.env.${mode}`);
+  const env = {};
+
+  if (fs.existsSync(envPath)) {
+    const content = fs.readFileSync(envPath, 'utf-8');
+    content.split('\n').forEach(line => {
+      const match = line.match(/^\s*([\w_]+)\s*=\s*(.*)?\s*$/);
+      if (match) {
+        env[match[1]] = match[2];
+      }
+    });
+  }
+  return env;
+};
+
+module.exports = (envObj, argv) => {
+  const mode = argv.mode || 'development';
+  const isProduction = mode === 'production';
+  const env = parseEnv(mode);
+
+  const publicPath = env.PUBLIC_PATH || (isProduction ? '/react-micro-app/' : 'http://localhost:3004/');
+  const port = env.PORT || 3004;
 
   return {
     entry: './src/index.tsx',
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: isProduction ? '[name].[contenthash].js' : '[name].js',
-      publicPath: isProduction ? '/react-micro-app/' : 'http://localhost:3001/',
+      publicPath: publicPath,
       clean: true,
       library: `${packageName}-[name]`,
       libraryTarget: 'umd',
@@ -48,7 +71,7 @@ module.exports = (env, argv) => {
       }),
     ],
     devServer: {
-      port: 3001,
+      port: port,
       hot: true,
       historyApiFallback: true,
       allowedHosts: 'all',
@@ -59,7 +82,7 @@ module.exports = (env, argv) => {
         'Access-Control-Allow-Credentials': 'false',
       },
       client: {
-        webSocketURL: 'ws://localhost:3001/ws',
+        webSocketURL: 'ws://localhost:3004/ws',
       },
     },
     optimization: {
