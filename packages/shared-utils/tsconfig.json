@@ -5,7 +5,10 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "noEmit": false
+    "noEmit": false,
+    "types": [
+      "node"
+    ]
   },
   "include": [
     "src/**/*"
