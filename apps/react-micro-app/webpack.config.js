@@ -1,3 +1,4 @@
+const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin');
 const path = require('path');
 const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -65,6 +66,21 @@ module.exports = (envObj, argv) => {
       ],
     },
     plugins: [
+      new HtmlWebpackExternalsPlugin({
+        externals: [
+          {
+            module: 'react',
+            entry: 'https://unpkg.com/react@18.2.0/umd/react.production.min.js',
+            global: 'React',
+          },
+          {
+            module: 'react-dom',
+            entry: 'https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js',
+            global: 'ReactDOM',
+          },
+        ],
+        enabled: isProduction,
+      }),
       new HtmlWebpackPlugin({
         template: './public/index.html',
         title: 'React Micro App',
@@ -85,6 +101,10 @@ module.exports = (envObj, argv) => {
         webSocketURL: 'ws://localhost:3004/ws',
       },
     },
+    externals: isProduction ? {
+      react: 'React',
+      'react-dom': 'ReactDOM',
+    } : {},
     optimization: {
       splitChunks: false,
     },

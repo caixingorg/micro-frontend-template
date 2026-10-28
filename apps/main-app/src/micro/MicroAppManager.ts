@@ -39,6 +39,7 @@ class MicroAppManagerClass {
             experimentalStyleIsolation: true, // 开启Scope CSS隔离
             strictStyleIsolation: false,      // 关闭ShadowDOM
           },
+          excludeAssetFilter: (url) => url.includes('unpkg.com') || url.includes('/static/libs/'),
           prefetch: 'all', // 预加载策略 (可选)
         });
         this.isStarted = true;

@@ -50,7 +50,7 @@ export interface GlobalState {
 export interface RouteConfig {
   path: string;
   name: string;
-  component?: React.ComponentType<any>;
+  component?: any;
   microApp?: string;
   meta?: {
     title?: string;

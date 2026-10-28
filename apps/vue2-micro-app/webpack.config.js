@@ -1,3 +1,4 @@
+const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { VueLoaderPlugin } = require('vue-loader');
@@ -104,6 +105,16 @@ module.exports = (env, argv) => {
       ],
     },
     plugins: [
+      new HtmlWebpackExternalsPlugin({
+        externals: [
+          {
+            module: 'vue',
+            entry: 'https://unpkg.com/vue@2.7.16/dist/vue.runtime.min.js',
+            global: 'Vue',
+          },
+        ],
+        enabled: isProduction,
+      }),
       new VueLoaderPlugin(),
       new HtmlWebpackPlugin({
         template: './public/index.html',
