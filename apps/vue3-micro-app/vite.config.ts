@@ -44,6 +44,14 @@ export default defineConfig(({ mode }) => {
       target: 'esnext',
       minify: false,
       cssCodeSplit: false,
+      rollupOptions: {
+        external: ['vue'],
+        output: {
+          globals: {
+            vue: 'Vue',
+          },
+        },
+      },
     },
     define: {
       __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,

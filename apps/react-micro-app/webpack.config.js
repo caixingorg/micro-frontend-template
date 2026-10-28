@@ -85,6 +85,10 @@ module.exports = (envObj, argv) => {
         webSocketURL: 'ws://localhost:3004/ws',
       },
     },
+    externals: isProduction ? {
+      react: 'React',
+      'react-dom': 'ReactDOM',
+    } : {},
     optimization: {
       splitChunks: false,
     },
